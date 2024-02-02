@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import { FlatList, Dimensions, StyleSheet } from 'react-native';
-import { useKeyPressEvent } from 'react-use';
 import Post from '../post/post';
 
 const data = [
@@ -26,18 +25,29 @@ const data = [
 
 export default function Main() {
   const [index, setIndex] = useState(0);
-  const flatListRef = React.createRef<FlatList<any>>();
+  const flatListRef = useRef<FlatList<any>>(null);
+  const ITEM_HEIGHT = Dimensions.get('window').height * 0.8;
 
-  useKeyPressEvent('w', () => {
-    setIndex((prevIndex) => Math.max(0, prevIndex - 1));
-  });
+  useLayoutEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'w') {
+        setIndex((prevIndex) => Math.max(0, prevIndex - 1));
+      } else if (e.key === 's') {
+        setIndex((prevIndex) => Math.min(data.length - 1, prevIndex + 1));
+      }
+    };
 
-  useKeyPressEvent('s', () => {
-    setIndex((prevIndex) => Math.min(data.length - 1, prevIndex + 1));
-  });
+    window.addEventListener('keydown', handleKeyDown);
 
-  useEffect(() => {
-    flatListRef.current?.scrollToIndex({ index, animated: true });
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({ index, animated: true });
+    }
   }, [index]);
 
   const renderItem = ({ item }) => (
@@ -56,6 +66,9 @@ export default function Main() {
       showsVerticalScrollIndicator={false}
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
+      getItemLayout={(data, index) => (
+        {length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index}
+      )}
     />
   );
 }
