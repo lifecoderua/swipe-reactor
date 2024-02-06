@@ -28,6 +28,7 @@ export default function Main() {
   const flatListRef = useRef<FlatList<any>>(null);
   const ITEM_HEIGHT = Dimensions.get('window').height * 0.8;
 
+  // set navigation
   useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'w') {
