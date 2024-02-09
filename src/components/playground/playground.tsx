@@ -33,14 +33,15 @@ export default function Playground() {
   // `;
 
   const GET_POSTS = gql`
-    query {
-    tag(name: null) {
+    query GetPosts($tagName: String, $type: PostLineType!, $page: Int, $offset: Int) {
+    tag(name: $tagName) {
       name,
       nsfw,
-      postPager(type: GOOD) {
-        posts(offset: 0) {
+      postPager(type: $type) {
+        posts(page: $page, offset: $offset) {
           header,
           text,
+          nsfw,
           attributes {
             __typename
             type
@@ -65,7 +66,14 @@ export default function Playground() {
     },
   }`;
 
-  const { loading, error, data } = useQuery(GET_POSTS);
+  const { loading, error, data } = useQuery(GET_POSTS, {
+    variables: {
+      tagName: null,
+      type: 'GOOD',
+      page: 0,
+      offset: 0,
+    },
+  });
 
   if (loading) return 'Loading...';
   if (error) return `Error! ${error.message}`;
