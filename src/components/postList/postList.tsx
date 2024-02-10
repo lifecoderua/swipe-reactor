@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet, FlatList, Text} from "react-native";
-import React, {useLayoutEffect, useRef, useState} from "react";
+import React, {useLayoutEffect, useRef, useState, useCallback} from "react";
 import Post from "../post/post";
 
 // TODO: mouse scroll doesn't affect keyboard nav index update - jumps on mouse => keyboard scroll switch
@@ -31,12 +31,14 @@ type PostListProps = {
 
 export default function PostList(props: PostListProps) {
   const [index, setIndex] = useState(0);
+  const isUserEventRef = useRef(false);
   const flatListRef = useRef<FlatList<any>>(null);
   const ITEM_HEIGHT = Dimensions.get('window').height * 0.8;
 
   // set navigation
   useLayoutEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      isUserEventRef.current = true;
       if (e.key === 'w') {
         setIndex((prevIndex) => Math.max(0, prevIndex - 1));
       } else if (e.key === 's') {
@@ -51,8 +53,19 @@ export default function PostList(props: PostListProps) {
     };
   }, []);
 
+  const onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
+    if (!isUserEventRef.current) {
+      console.log('viewableItems', viewableItems);
+      console.log('changed', changed);
+      changed[0] && setIndex(changed[0].index);
+    }
+    isUserEventRef.current = true;
+  }, []);
+
   useLayoutEffect(() => {
+    console.log('>>> ,index', index);
     if (flatListRef.current) {
+      isUserEventRef.current = true;
       flatListRef.current.scrollToIndex({ index, animated: true });
     }
   }, [index]);
@@ -93,6 +106,7 @@ export default function PostList(props: PostListProps) {
       getItemLayout={(data, index) => (
         {length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index}
       )}
+      onViewableItemsChanged={onViewableItemsChanged}
     />
   );
 }
