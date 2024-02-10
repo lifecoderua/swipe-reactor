@@ -22,11 +22,19 @@ type PostAttributes = {
 type Post = {
   id: string,
   text: string,
+  nsfw: boolean,
   attributes: PostAttributes[],
+  tags: {
+    name: string,
+  }[],
+  user: {
+    username: string,
+  }
 }
 
 type PostListProps = {
   posts: Post[],
+  // TODO: use direction instead?
   onIndexChange: (newIndex: number) => void,
 }
 
@@ -80,7 +88,7 @@ export default function PostList(props: PostListProps) {
 
   const renderImage = (post) => (
     <Post
-      title={post.user.userName}
+      title={post.user.username}
       imageURL={getImageSrc(post) as string}
     />
   );

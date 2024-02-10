@@ -5,7 +5,7 @@ import PostList from "../postList/postList";
 const OFFSET_PER_PAGE = 10;
 
 export default function Main() {
-  const [offset, setOffset] = React.useState(10);
+  const [offset, setOffset] = React.useState(0);
   const [tagName, setTagName] = React.useState(null);
 
   const GET_POSTS = gql`
