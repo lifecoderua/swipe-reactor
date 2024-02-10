@@ -50,7 +50,16 @@ export default function Main() {
   if (loading) return 'Loading...';
   if (error) return `Error! ${error.message}`;
 
+  const posts = data.tag.postPager.posts;
+
+  const onIndexChange = (newIndex: number) => {
+    console.log('index', newIndex);
+  }
+
   return (
-    <PostList posts={data.tag.postPager.posts} />
+    <PostList
+      posts={posts}
+      onIndexChange={onIndexChange}
+    />
   )
 }
