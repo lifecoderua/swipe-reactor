@@ -57,7 +57,9 @@ export default function Main() {
   if (loading) return 'Loading...';
   if (error) return `Error! ${error.message}`;
 
-  const posts = data.tag.postPager.posts;
+  const allPosts = data.tag.postPager.posts;
+  // filter out nsfw
+  const posts = allPosts.filter((post: any) => !post.nsfw);
 
   const onIndexChange = (newIndex: number) => {
     console.log('index', newIndex);
