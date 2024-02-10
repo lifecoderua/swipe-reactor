@@ -16,8 +16,8 @@ export default function App() {
     <View style={styles.container}>
       <ApolloProvider client={client}>
         <Text>Open up App.tsx to start working on your app!</Text>
-        <Playground />
-        <hr/>
+        {/*<Playground />*/}
+        {/*<hr/>*/}
         <Main />
         <StatusBar style="auto" />
       </ApolloProvider>

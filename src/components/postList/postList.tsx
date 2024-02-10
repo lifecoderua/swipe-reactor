@@ -2,6 +2,8 @@ import {Dimensions, StyleSheet, FlatList, Text} from "react-native";
 import React, {useLayoutEffect, useRef, useState} from "react";
 import Post from "../post/post";
 
+// TODO: mouse scroll doesn't affect keyboard nav index update - jumps on mouse => keyboard scroll switch
+
 type PostAttributes = {
   __typename: string,
   type: string,
@@ -66,7 +68,7 @@ export default function PostList(props: PostListProps) {
     return `https://img10.joyreactor.cc/pics/post/${tags[0]}-${tags[1]}-${tags[2]}-${imagePostId}.${image.type}`;
   }
 
-  const renderItem = (post) => getImageSrc(post) ? renderImage(post) : renderPlaceholder(post);
+  const renderItem = ({item: post}) => getImageSrc(post) ? renderImage(post) : renderPlaceholder(post);
 
   const renderImage = (post) => (
     <Post title={post.id} imageURL={getImageSrc(post) as string} />
