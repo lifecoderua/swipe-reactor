@@ -73,13 +73,16 @@ export default function PostList(props: PostListProps) {
     const image = post.attributes[0].image;
     const tags = post.tags.map((tag) => tag.name);
     const imagePostId = atob(post.attributes[0].id).split(':')[1];
-    return `https://img10.joyreactor.cc/pics/post/${tags[0]}-${tags[1]}-${tags[2]}-${imagePostId}.${image.type}`;
+    return `https://img10.joyreactor.cc/pics/post/image-${imagePostId}.${image.type}`;
   }
 
   const renderItem = ({item: post}) => getImageSrc(post) ? renderImage(post) : renderPlaceholder(post);
 
   const renderImage = (post) => (
-    <Post title={post.id} imageURL={getImageSrc(post) as string} />
+    <Post
+      title={post.user.userName}
+      imageURL={getImageSrc(post) as string}
+    />
   );
 
   const renderPlaceholder = (post) => (

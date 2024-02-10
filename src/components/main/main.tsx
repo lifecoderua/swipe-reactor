@@ -2,7 +2,11 @@ import React from 'react';
 import {gql, useQuery} from "@apollo/client";
 import PostList from "../postList/postList";
 
+const OFFSET_PER_PAGE = 10;
+
 export default function Main() {
+  const [offset, setOffset] = React.useState(10);
+  const [tagName, setTagName] = React.useState(null);
 
   const GET_POSTS = gql`
     query GetPosts($tagName: String, $type: PostLineType!, $page: Int, $offset: Int) {
@@ -31,6 +35,9 @@ export default function Main() {
           tags {
             name
           },
+          user {
+            username
+          },
           id
         }
         count
@@ -40,10 +47,10 @@ export default function Main() {
 
   const { loading, error, data } = useQuery(GET_POSTS, {
     variables: {
-      tagName: null,
+      tagName,
       type: 'GOOD',
       page: 0,
-      offset: 0,
+      offset,
     },
   });
 
@@ -54,6 +61,10 @@ export default function Main() {
 
   const onIndexChange = (newIndex: number) => {
     console.log('index', newIndex);
+    if (newIndex === posts.length - 1) {
+      console.log('fetch more');
+      setOffset((prevOffset) => prevOffset + OFFSET_PER_PAGE)
+    }
   }
 
   return (
@@ -62,4 +73,14 @@ export default function Main() {
       onIndexChange={onIndexChange}
     />
   )
+
+  // return (
+  //   <View>
+  //     <PostList
+  //       posts={posts}
+  //       onIndexChange={onIndexChange}
+  //     />
+  //     <Button title={'Next'} onPress={() => console.log('Next')}/>
+  //   </View>
+  // )
 }
